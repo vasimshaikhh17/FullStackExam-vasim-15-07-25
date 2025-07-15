@@ -13,7 +13,6 @@ interface Product {
   imageUrl: string;
 }
 
-// This function receives the route params and fetches data
 async function getProduct(id: string): Promise<Product | null> {
   try {
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`;
@@ -30,14 +29,13 @@ async function getProduct(id: string): Promise<Product | null> {
     return data;
   } catch (error: any) {
     console.error("Failed to fetch product:", error);
-    if (error.message.includes('not found')) { // Or check for notFound error type
+    if (error.message.includes('not found')) { 
         notFound();
     }
     return null;
   }
 }
 
-// This is the function to generate dynamic metadata (e.g., the page title)
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const product = await getProduct(params.id);
   if (!product) {
@@ -51,12 +49,10 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-// This is our main page component
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {
   const product = await getProduct(params.id);
 
   if (!product) {
-    // This case might be hit if the getProduct function returned null for a non-404 error
     return <p>Could not load product details.</p>;
   }
 

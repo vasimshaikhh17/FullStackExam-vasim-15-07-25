@@ -1,8 +1,6 @@
 import PaginationControls from "../components/PaginationControls";
 import ProductCard from "../components/ProductCard";
 
-
-// Define types for the data we expect from the API
 interface Product {
   _id: string;
   name: string;
@@ -16,7 +14,14 @@ interface ProductData {
   pages: number;
 }
 
-// Update the data fetching function to accept a page number
+
+interface PageProps {
+  searchParams?: {
+    page?: string;
+    search?: string;
+  };
+}
+
 async function getProducts(page: number): Promise<{ data: ProductData | null; error: string | null }> {
   try {
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products?page=${page}`;
@@ -32,13 +37,8 @@ async function getProducts(page: number): Promise<{ data: ProductData | null; er
   }
 }
 
-// The page component now accepts searchParams to get the current page
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const page = Number(searchParams.page) || 1;
+export default async function HomePage({ searchParams }: PageProps) {
+  const page = Number(searchParams?.page) || 1;
   const { data, error } = await getProducts(page);
 
   if (error) {
@@ -62,9 +62,6 @@ export default async function HomePage({
         <ProductCard key={product._id} product={product} />
       ))}
     </div>
-
-    {/* The PaginationControls will need top margin to separate it from the grid */}
-    {/* This will likely be handled inside the PaginationControls component itself */}
     <PaginationControls
       totalPages={data.pages}
       currentPage={data.page}
