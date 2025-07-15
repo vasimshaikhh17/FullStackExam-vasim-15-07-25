@@ -10,15 +10,22 @@ const mongoUri = process.env.MONGO_URI;
 if (!dbUrl || !mongoUri) {
   console.error("Database environment variables DATABASE_URL and MONGO_URI must be set.");
   process.exit(1);
+  
 }
 
-// 1. Create and export the instance. This is the single source of truth.
 export const sequelize = new Sequelize(dbUrl, {
   dialect: 'postgres',
   logging: false,
+  ...(process.env.NODE_ENV === 'production' && {
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, 
+      },
+    },
+  }),
 });
 
-// 2. The connect function NO LONGER syncs models. It just connects.
 export const connectDB = async () => {
   try {
     await sequelize.authenticate();
