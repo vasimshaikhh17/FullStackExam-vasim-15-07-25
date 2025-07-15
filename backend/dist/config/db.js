@@ -17,15 +17,23 @@ const sequelize_1 = require("sequelize");
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-exports.sequelize = new sequelize_1.Sequelize(process.env.DATABASE_URL, {
+const dbUrl = process.env.DATABASE_URL;
+const mongoUri = process.env.MONGO_URI;
+if (!dbUrl || !mongoUri) {
+    console.error("Database environment variables DATABASE_URL and MONGO_URI must be set.");
+    process.exit(1);
+}
+// 1. Create and export the instance. This is the single source of truth.
+exports.sequelize = new sequelize_1.Sequelize(dbUrl, {
     dialect: 'postgres',
     logging: false,
 });
+// 2. The connect function NO LONGER syncs models. It just connects.
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield exports.sequelize.authenticate();
         console.log('PostgreSQL connected...');
-        yield mongoose_1.default.connect(process.env.MONGO_URI);
+        yield mongoose_1.default.connect(mongoUri);
         console.log('MongoDB connected...');
     }
     catch (error) {
