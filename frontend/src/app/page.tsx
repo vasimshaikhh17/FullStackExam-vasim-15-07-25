@@ -1,7 +1,6 @@
 import ProductCard from "../components/ProductCard";
 import PaginationControls from "../components/PaginationControls";
 
-// Define types for our application data (these are fine)
 interface Product {
   _id: string;
   name: string;
@@ -15,7 +14,6 @@ interface ProductData {
   pages: number;
 }
 
-// Data fetching function (this is also fine)
 async function getProducts(page: number): Promise<{ data: ProductData | null; error: string | null }> {
   try {
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products?page=${page}`;
@@ -31,15 +29,12 @@ async function getProducts(page: number): Promise<{ data: ProductData | null; er
   }
 }
 
-// THIS IS THE FINAL, CORRECT FIX for the component signature.
-// We are no longer using a custom interface. Instead, we are defining the
-// shape of the props object directly and precisely.
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const page = Number(searchParams.page) || 1;
+  const page = Number(searchParams?.page) || 1;
   const { data, error } = await getProducts(page);
 
   if (error) {
@@ -53,22 +48,18 @@ export default async function HomePage({
   return (
    <div className="bg-transparent">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl mb-10">
           Latest Products
         </h2>
-
         <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {data.products.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </div>
-
         <PaginationControls
           totalPages={data.pages}
           currentPage={data.page}
         />
-
       </div>
     </div>
   );
