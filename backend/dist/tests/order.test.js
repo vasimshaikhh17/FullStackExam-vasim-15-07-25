@@ -13,24 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
-const app_1 = __importDefault(require("../app")); // Your main express app file
+const app_1 = __importDefault(require("../app"));
 const db_1 = require("../config/db");
+const mongoose_1 = __importDefault(require("mongoose"));
 const models_1 = require("../models");
 const Product_1 = __importDefault(require("../models/mongo/Product"));
-const mongoose_1 = __importDefault(require("mongoose"));
-// This is a simplified test. A real test would require more setup/teardown.
 describe('POST /api/orders', () => {
     let token;
     let userId;
     let productId;
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        // Create a test user and get a token
+        yield models_1.OrderItem.destroy({ where: {}, truncate: true });
+        yield models_1.Order.destroy({ where: {}, truncate: true });
         yield models_1.User.destroy({ where: { email: 'test@example.com' } });
         const user = yield models_1.User.create({ name: 'Test User', email: 'test@example.com', passwordHash: 'password123' });
         userId = user.id;
         const res = yield (0, supertest_1.default)(app_1.default).post('/api/auth/login').send({ email: 'test@example.com', password: 'password123' });
         token = res.body.token;
-        // Create a test product
         const product = yield Product_1.default.create({ name: 'Test Book', description: 'A book for testing', price: 10, category: 'Books', stock: 100 });
         productId = product._id.toString();
     }));
