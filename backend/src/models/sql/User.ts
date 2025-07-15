@@ -1,7 +1,6 @@
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 import bcrypt from 'bcryptjs';
 
-// The rest of your interfaces remain the same
 interface UserAttributes {
   id: number;
   name: string;
@@ -10,7 +9,6 @@ interface UserAttributes {
 }
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
-// Your class definition remains the same
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;
   public name!: string;
@@ -24,7 +22,6 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   }
 }
 
-// Export a function that takes the sequelize instance
 export const initUserModel = (sequelize: Sequelize) => {
   User.init({
     id: {
@@ -46,7 +43,7 @@ export const initUserModel = (sequelize: Sequelize) => {
       allowNull: false,
     },
   }, {
-    sequelize, // Use the instance passed to the function
+    sequelize, 
     tableName: 'users',
     hooks: {
       async beforeCreate(user: User) {

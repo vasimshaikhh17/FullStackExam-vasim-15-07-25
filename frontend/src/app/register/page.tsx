@@ -30,9 +30,7 @@ export default function RegisterPage() {
 
     try {
       const { data } = await api.post(`/auth/register`, { name, email, password });
-      // Log the user in automatically after successful registration
       login(data);
-      // Redirect to the home page
       router.push('/');
     } catch (err: any) {
       console.log('err: ', err);

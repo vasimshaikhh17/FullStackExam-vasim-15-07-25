@@ -1,6 +1,5 @@
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
-// Define the interfaces for the model attributes
 interface OrderItemAttributes {
   id: number;
   orderId: number;
@@ -11,7 +10,6 @@ interface OrderItemAttributes {
 }
 interface OrderItemCreationAttributes extends Optional<OrderItemAttributes, 'id'> {}
 
-// Define the model class
 class OrderItem extends Model<OrderItemAttributes, OrderItemCreationAttributes> implements OrderItemAttributes {
   public id!: number;
   public orderId!: number;
@@ -21,7 +19,6 @@ class OrderItem extends Model<OrderItemAttributes, OrderItemCreationAttributes> 
   public price!: number;
 }
 
-// Export the initialization function - this is the key change
 export const initOrderItemModel = (sequelize: Sequelize) => {
   OrderItem.init({
     id: {
@@ -33,7 +30,7 @@ export const initOrderItemModel = (sequelize: Sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'orders', // Use the table name string 'orders'
+        model: 'orders', 
         key: 'id',
       },
     },
@@ -54,7 +51,7 @@ export const initOrderItemModel = (sequelize: Sequelize) => {
       allowNull: false,
     },
   }, {
-    sequelize, // Use the sequelize instance passed into this function
+    sequelize,
     tableName: 'order_items',
     timestamps: false,
   });

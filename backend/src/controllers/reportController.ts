@@ -1,10 +1,9 @@
-import { Request, Response } from 'express';
-import { sequelize } from '../config/db';
-import { QueryTypes } from 'sequelize';
-import { OrderItem } from '../models'; // Correct way to import the SQL model
-import Product from '../models/mongo/Product'; // Correct way to import the Mongoose model
+import { Request, Response } from "express";
+import { sequelize } from "../config/db";
+import { QueryTypes } from "sequelize";
+import { OrderItem } from "../models";
+import Product from "../models/mongo/Product";
 
-// This function is likely correct, no changes needed here.
 export const getDailyRevenue = async (req: Request, res: Response) => {
   try {
     const revenue = await sequelize.query(
@@ -18,59 +17,54 @@ export const getDailyRevenue = async (req: Request, res: Response) => {
     res.json(revenue);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error fetching daily revenue.' });
+    res.status(500).json({ message: "Server error fetching daily revenue." });
   }
 };
 
 export const getSalesByCategory = async (req: Request, res: Response) => {
   try {
-    // Step 1: Fetch all order items from the SQL database.
     const allOrderItems = await OrderItem.findAll();
 
     if (allOrderItems.length === 0) {
-      return res.json([]); // Return an empty array if there are no orders
+      return res.json([]);
     }
-    
-    // Step 2: Get all unique product IDs from the order items.
-    const productIds = allOrderItems.map(item => item.productId);
+    const productIds = allOrderItems.map((item) => item.productId);
 
-    // Step 3: Fetch the corresponding products from MongoDB to get their categories.
-    // We only need the _id and category fields for efficiency.
-    const productsFromMongo = await Product.find({ _id: { $in: productIds } }).select('_id category');
-    
-    // Step 4: Create a simple map for fast lookups (ID -> Category).
+    const productsFromMongo = await Product.find({
+      _id: { $in: productIds },
+    }).select("_id category");
+
     const productCategoryMap = new Map(
-      productsFromMongo.map(p => [p._id.toString(), p.category])
+      productsFromMongo.map((p) => [p._id.toString(), p.category])
     );
 
-    // Step 5: Calculate the total sales for each category.
     const categorySales: { [key: string]: number } = {};
 
     for (const item of allOrderItems) {
       const category = productCategoryMap.get(item.productId);
 
       if (category) {
-        // Initialize the category if it's the first time we've seen it
         if (!categorySales[category]) {
           categorySales[category] = 0;
         }
 
-        // CRITICAL FIX: Sequelize returns DECIMAL as a string. We must parse it to a number.
         const itemTotal = item.price * item.quantity;
         categorySales[category] += itemTotal;
       }
     }
-    
-    // Step 6: Format the result into the array structure required by the exam.
-    const result = Object.entries(categorySales).map(([category, totalSales]) => ({
-      _id: category,
-      totalSales: totalSales,
-    }));
+
+    const result = Object.entries(categorySales).map(
+      ([category, totalSales]) => ({
+        _id: category,
+        totalSales: totalSales,
+      })
+    );
 
     res.json(result);
-
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error fetching sales by category.' });
+    res
+      .status(500)
+      .json({ message: "Server error fetching sales by category." });
   }
 };

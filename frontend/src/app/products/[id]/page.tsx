@@ -1,7 +1,6 @@
 
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import api from '../../../utils/api';
 import AddToCartButton from '../../../components/AddToCartButton';
 
 interface Product {

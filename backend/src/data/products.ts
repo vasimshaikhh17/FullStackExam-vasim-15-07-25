@@ -1,5 +1,4 @@
 export const products = [
-  // Your original products
   {
     name: 'Modern JavaScript Handbook',
     description: 'A comprehensive guide to modern JavaScript from ES6 to today. Perfect for beginners and experts alike.',

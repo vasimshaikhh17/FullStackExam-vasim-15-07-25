@@ -3,10 +3,8 @@ import dotenv from 'dotenv';
 import { products } from './data/products';
 import Product from './models/mongo/Product';
 
-// Load environment variables
 dotenv.config();
 
-// Function to connect directly to MongoDB
 const connectMongo = async () => {
   try {
     const mongoUri = process.env.MONGO_URI;
@@ -22,16 +20,11 @@ const connectMongo = async () => {
   }
 };
 
-// Function to import data
 const importData = async () => {
   try {
     await connectMongo();
-    
-    // To make the script re-runnable, clear existing products first
-    await Product.deleteMany();
-    
-    // Insert the sample products
-    await Product.insertMany(products);
+        await Product.deleteMany();
+        await Product.insertMany(products);
 
     console.log('✅ Data Imported Successfully!');
     process.exit();
@@ -40,8 +33,6 @@ const importData = async () => {
     process.exit(1);
   }
 };
-
-// Function to destroy data
 const destroyData = async () => {
   try {
     await connectMongo();
@@ -56,9 +47,6 @@ const destroyData = async () => {
   }
 };
 
-// Logic to run the correct function based on command-line arguments
-// To run: `ts-node src/seeder.ts` to import
-// To run: `ts-node src/seeder.ts -d` to destroy
 if (process.argv[2] === '-d') {
   destroyData();
 } else {
