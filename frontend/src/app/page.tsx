@@ -1,6 +1,7 @@
-import PaginationControls from "../components/PaginationControls";
 import ProductCard from "../components/ProductCard";
+import PaginationControls from "../components/PaginationControls";
 
+// Define types for our application data (these are fine)
 interface Product {
   _id: string;
   name: string;
@@ -14,13 +15,7 @@ interface ProductData {
   pages: number;
 }
 
-interface HomePageProps {
-  searchParams?: {
-    page?: string;
-    search?: string;
-  };
-}
-
+// Data fetching function (this is also fine)
 async function getProducts(page: number): Promise<{ data: ProductData | null; error: string | null }> {
   try {
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products?page=${page}`;
@@ -36,8 +31,15 @@ async function getProducts(page: number): Promise<{ data: ProductData | null; er
   }
 }
 
-export default async function HomePage({ searchParams }: HomePageProps) {
-  const page = Number(searchParams?.page) || 1;
+// THIS IS THE FINAL, CORRECT FIX for the component signature.
+// We are no longer using a custom interface. Instead, we are defining the
+// shape of the props object directly and precisely.
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const page = Number(searchParams.page) || 1;
   const { data, error } = await getProducts(page);
 
   if (error) {
