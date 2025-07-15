@@ -29,12 +29,13 @@ export default function RegisterPage() {
     }
 
     try {
-      const { data } = await api.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, { name, email, password });
+      const { data } = await api.post(`/auth/register`, { name, email, password });
       // Log the user in automatically after successful registration
       login(data);
       // Redirect to the home page
       router.push('/');
     } catch (err: any) {
+      console.log('err: ', err);
       setError(err.response?.data?.message || 'Failed to register. Please try again.');
     } finally {
       setLoading(false);
