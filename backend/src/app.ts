@@ -7,11 +7,13 @@ import productRoutes from './routes/productRoutes';
 import cartRoutes from './routes/cartRoutes';
 import orderRoutes from './routes/orderRoutes';
 import reportRoutes from './routes/reportRoutes';
+import morgan from "morgan"
 
 dotenv.config();
 connectDB();
 
 const app = express();
+app.use(morgan('dev'));
 
 app.use(cors());
 app.use(express.json());
