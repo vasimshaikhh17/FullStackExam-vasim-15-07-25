@@ -2,7 +2,7 @@
 
 This project is a demonstration of a full-stack e-commerce application built to fulfill a comprehensive exam question. It features a backend powered by Node.js and Express in an MVC architecture, and a modern frontend built with Next.js using the App Router. The application integrates both PostgreSQL for transactional data and MongoDB for product data.
 
-**Live Demo URL:** [Your-Deployment-Link-Here](https://your-deployment-link.com)
+**Live Demo URL:** [Your-Deployment-Link-Here](https://full-stack-exam-vasim-15-07-25-xubm.vercel.app/)
 
 ---
 
